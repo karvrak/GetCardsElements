@@ -44,7 +44,7 @@
         }else if(line.startsWith("	     <span class='card-number'")){
 
             const startIndex = line.indexOf("'card-number'") + 16;
-            const endIndex = line.indexOf("</", startIndex);
+            const endIndex = line.indexOf("/", startIndex);
             res = line.substring(startIndex, endIndex);
             tabIdCard.push(res);
 
