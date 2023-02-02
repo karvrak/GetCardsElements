@@ -12,7 +12,7 @@
  var tabName = [];   
 
 
- // Output: "Sorciere"
+ //open the readline
  function readLines({ input }) {
    const output = new stream.PassThrough({ objectMode: true });
    const rl = readline.createInterface({ input });
@@ -25,8 +25,14 @@
    return output;
  }
 
+
+
+ //start reading
  const input = fs.createReadStream("./index.html");
  (async () => {
+
+
+   //for each type of line get them and put them in an array
 
     for await (const line of readLines({ input })) {
         if(line.startsWith("	     <span class='rarity'")){
@@ -46,10 +52,10 @@
 
             const startIndex = line.indexOf("<span class='flavor-text'  >")+ 28 ;
             const endIndex = line.indexOf("</", startIndex);
-            res = '-'+ line.substring(startIndex, endIndex);
-            tabFlavorText.push(res.replace(/&#(\d+);/g, function(match, dec) {
-                return String.fromCharCode(dec);
-              }),);
+            res = line.substring(startIndex, endIndex).replace(/&#(\d+);/g, function(match, dec) { //replace is for this kind of text "qu&#8217;est-ce que c&#8217"
+              return String.fromCharCode(dec);
+            });
+            tabFlavorText.push(res);
 
         }else if(line.startsWith("	     <span class='pt'           >")){
 
@@ -61,20 +67,18 @@
         }else if(line.startsWith("	     <span class='type'         >")){
 
             const startIndex = line.indexOf("<span class='type'         >")+ 28 ;
-            const endIndex = line.indexOf("</", startIndex);
-            res =line.substring(startIndex, endIndex);
-            tabType.push(res.replace(/&#(\d+);/g, function(match, dec) {
-                return String.fromCharCode(dec);
-              }),);
+            const endIndex = line.indexOf("</", startIndex);     
+            res =line.substring(startIndex, endIndex).replace(/&#(\d+);/g, function(match, dec) {
+              return String.fromCharCode(dec);
+            });
+            tabType.push(res);
 
         }else if(line.startsWith("	     <span class='rule-text'    >")){
 
             const startIndex = line.indexOf("<span class='rule-text'    >")+ 28 ;
-            res =line.substring(startIndex);
-            res = res.replace(/&#(\d+);/g, function(match, dec) {
-                return String.fromCharCode(dec);
+            res =line.substring(startIndex).replace(/&#(\d+);/g, function(match, dec) {
+              return String.fromCharCode(dec);
             });
-           
             tabRuleText.push(res);
 
         }else if(line.startsWith("	     <span class='name'    >")){
@@ -89,6 +93,7 @@
         }
     }
 
+    //put everything in a json file
     const jsonData = [];
     for (let i = 0; i < tabRarity.length; i++) {
         const item = {
